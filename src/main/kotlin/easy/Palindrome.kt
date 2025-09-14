@@ -7,6 +7,8 @@ class Palindrome {
         var i = 0
         var j = last
         while (i < j) {
+            // можно оставить только !letterAlphanumeric check,
+            // но тогда возвращаться к верхнему i < j через continue
             while (!letterAlphanumeric(s[i]) && i < j) {
                 i++
             }
