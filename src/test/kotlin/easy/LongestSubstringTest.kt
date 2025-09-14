@@ -13,7 +13,7 @@ class LongestSubstringTest {
     }
 
     @Test
-    fun `valid`() {
+    fun valid() {
         assertEquals(tc.lengthOfLongestSubstring("abcabcbb"), 3)
         assertEquals(tc.lengthOfLongestSubstring("bbbbb"), 1)
         assertEquals(tc.lengthOfLongestSubstring("pwwkew"), 3)

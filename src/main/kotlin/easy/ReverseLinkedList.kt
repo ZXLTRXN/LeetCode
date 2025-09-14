@@ -1,5 +1,6 @@
 package easy
 
+@Suppress("unused")
 class ReverseLinkedList {
     fun reverseList(head: ListNode?): ListNode? {
         return recursiveReverseList(head, null)

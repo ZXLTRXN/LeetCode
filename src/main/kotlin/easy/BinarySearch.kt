@@ -1,4 +1,6 @@
 package easy
+
+@Suppress("unused")
 class BinarySearch {
 
     /**

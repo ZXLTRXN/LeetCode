@@ -1,5 +1,6 @@
 package easy
 
+@Suppress("unused")
 class InvertTree {
 
     class TreeNode(var value: Int) {

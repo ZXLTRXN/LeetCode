@@ -1,6 +1,7 @@
 package easy
 
 class TwoSums {
+    @Suppress("unused")
     fun twoSum(nums: IntArray, target: Int): IntArray {
         for (i in nums.indices) {
             for (j in (i+1)..<nums.size) {

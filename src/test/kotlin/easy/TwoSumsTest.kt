@@ -13,7 +13,7 @@ class TwoSumsTest {
     }
 
     @Test
-    fun `valid`() {
+    fun valid() {
         Assertions.assertEquals(tc.twoSumOptimal(intArrayOf(2, 7, 11, 15), 9), intArrayOf(0, 1))
 
     }

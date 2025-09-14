@@ -1,5 +1,6 @@
 package easy
 
+@Suppress("unused")
 class SimpleTasks {
 
     fun reverseString(str: String): String {
