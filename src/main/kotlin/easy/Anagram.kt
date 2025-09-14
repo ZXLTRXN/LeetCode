@@ -1,3 +1,7 @@
+package easy
+
+import kotlin.text.iterator
+
 class Anagram() {
     fun solve(s: String, t: String): Boolean {
         if(s.isEmpty() || t.isEmpty() || s.length != t.length) return false

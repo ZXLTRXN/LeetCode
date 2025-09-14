@@ -1,3 +1,5 @@
+package easy
+
 class SimpleTasks {
 
     fun reverseString(str: String): String {

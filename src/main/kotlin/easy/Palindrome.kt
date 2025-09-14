@@ -1,4 +1,4 @@
-import kotlin.text.StringBuilder
+package easy
 
 class Palindrome {
 

@@ -1,3 +1,5 @@
+package easy
+
 class ReverseLinkedList {
     fun reverseList(head: ListNode?): ListNode? {
         return recursiveReverseList(head, null)

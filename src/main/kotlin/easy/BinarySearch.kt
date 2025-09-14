@@ -1,4 +1,4 @@
-
+package easy
 class BinarySearch {
 
     /**

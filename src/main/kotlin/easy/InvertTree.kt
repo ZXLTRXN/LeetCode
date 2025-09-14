@@ -1,3 +1,5 @@
+package easy
+
 class InvertTree {
 
     class TreeNode(var value: Int) {
