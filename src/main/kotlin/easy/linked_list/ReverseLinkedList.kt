@@ -1,4 +1,4 @@
-package easy
+package easy.linked_list
 
 @Suppress("unused")
 class ReverseLinkedList {
@@ -26,9 +26,4 @@ class ReverseLinkedList {
 
         return recursiveReverseList(oldNext, head)
     }
-}
-
-
-data class ListNode(var value: Int) {
-    var next: ListNode? = null
 }

@@ -1,5 +1,6 @@
 package easy
 
+
 @Suppress("unused")
 class SimpleTasks {
 
@@ -12,5 +13,16 @@ class SimpleTasks {
             builder.append(str[i])
         }
         return builder.toString()
+    }
+
+    fun removeDuplicates(list: List<Int>): List<Int> {
+        val set = LinkedHashSet<Int>()
+
+        for (el in list) {
+            if(!set.contains(el)) {
+                set.add(el)
+            }
+        }
+        return set.toTypedArray().toList()
     }
 }
