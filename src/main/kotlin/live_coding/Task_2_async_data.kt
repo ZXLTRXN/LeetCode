@@ -9,12 +9,19 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
- * Постановка.
+ * https://github.com/kish-dev/coroutines-interview
+
  * Два независимых запроса: fetchUser() и fetchUserOrders(). Выполнить параллельно.
  * Если любая из них завершается ошибкой — вся корутина отменяется.
  * Сделал по сложнее, если ошибка в первой - отмена, во второй - частичный успех
@@ -55,22 +62,44 @@ suspend fun getData(
     val orders = try {
         userOrdersDef.await()
     } catch(ex: CancellationException) {
-        println("orders canceled")
+        println("orders canceled") // не увидим т.к не дойдет до await, но fetchUserOrders перехватит
         throw ex
     } catch(ex: RuntimeException) {
         println("orders ex $ex")
         listOf()
     }
     return@withContext AggregateState.Success(myUser, orders)
-
 }
+
+// тут реализую отвал при любой ошибке, упрощенный пример
+fun getDataFlowSimple(scope: CoroutineScope) = flow<AggregateState> {
+    println("getDataFlowSimple on ${Thread.currentThread().name}")
+    val userDataDef = scope.async {
+        println("getDataFlowSimple async1 on ${Thread.currentThread().name}")
+        fetchUserError(id = 1)
+    }
+
+    val userOrdersDef = scope.async {
+        println("getDataFlowSimple async2 on ${Thread.currentThread().name}")
+        fetchUserOrders(id = 1)
+    }
+    emit(AggregateState.Success(userDataDef.await(), userOrdersDef.await()))
+}
+    .flowOn(Dispatchers.IO) // работает
+    .catch { err ->
+        emit(AggregateState.Failure(err))
+    }
+    .stateIn(scope = scope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AggregateState.Loading
+    )
 
 fun main() {
     runBlocking {
         val _stateFlow = MutableStateFlow<AggregateState>(AggregateState.Loading)
 
-        val viewScope = CoroutineScope(Job())
-
+        val dis = newFixedThreadPoolContext(1, "ViewThreadPool")
+        val viewScope = CoroutineScope(Job() + dis)
 
         println("blocking on ${Thread.currentThread().name}")
 
@@ -91,11 +120,10 @@ fun main() {
             try {
                 _stateFlow.value = getData(1)
             } catch (ex: RuntimeException) {
-                println("getData wrapper ex $ex")
+                println("getData wrapper ex $ex") // если есть доп скоп внутри, то сюда не дойдут ошибки
                 throw ex
             }
         }
-
 
         println("before collect")
         viewScope.launch { // чтобы collect не ушел в бесконечное ожидание,
@@ -104,11 +132,24 @@ fun main() {
                 println("state $it")
             }
         }
-        println("after collect")
-        delay(5000)
-        println("after delay")
-        viewScope.cancel()
 
+        delay(5000)
+
+
+        println("\n\ngetDataFlowSimple run")
+        val disF = newFixedThreadPoolContext(3, "FlowThreadPool")
+        val flowScope = CoroutineScope(Job() + disF)
+        viewScope.launch {
+            getDataFlowSimple(flowScope).collect {
+                println("getDataFlowSimple collect on ${Thread.currentThread().name}")
+                println(it)
+            }
+        }
+
+        delay(5000)
+        flowScope.cancel()
+        viewScope.cancel()
+        println("end")
 
     }
 }
