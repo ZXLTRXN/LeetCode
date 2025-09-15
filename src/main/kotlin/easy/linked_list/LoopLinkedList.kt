@@ -52,3 +52,7 @@ class LoopLinkedList {
         println(findLoop(singleCycle))
     }
 }
+
+fun main() {
+    LoopLinkedList().simpleTest()
+}
