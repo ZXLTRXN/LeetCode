@@ -27,7 +27,7 @@ import kotlinx.coroutines.runBlocking
  */
 suspend fun sourceCodeWithProblem(ceh :CoroutineExceptionHandler) {
     val cs = CoroutineScope(Dispatchers.Default + SupervisorJob()).launch {
-        val one = launch() {
+        val one = launch(ceh) {
             withExc()
         }
         val two = launch() {

@@ -1,4 +1,4 @@
-package easy
+package live_coding
 
 @Suppress("unused")
 class MySingleton private constructor() {
