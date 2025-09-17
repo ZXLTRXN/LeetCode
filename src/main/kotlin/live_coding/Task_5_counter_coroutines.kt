@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger
 fun main() {
     runBlocking(Dispatchers.Default) {
 //        initialTask()
-//        atomicResolution()
-        mutexResolution()
+//        atomicSolution()
+        mutexSolution()
     }
 }
 
@@ -40,7 +40,7 @@ suspend fun CoroutineScope.initialTask() {
     println("counter=$counter")
 }
 
-suspend fun CoroutineScope.atomicResolution() {
+suspend fun CoroutineScope.atomicSolution() {
     val counter = AtomicInteger(0)
     val jobs = List(1_000) {
         launch {
@@ -54,7 +54,7 @@ suspend fun CoroutineScope.atomicResolution() {
     println("counter=${counter.get()}")
 }
 
-suspend fun CoroutineScope.mutexResolution() {
+suspend fun CoroutineScope.mutexSolution() {
     val mutex: Mutex = Mutex()
     var counter = 0
     val jobs = List(1_000) {

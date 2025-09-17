@@ -12,9 +12,9 @@ import kotlin.concurrent.thread
 fun main() {
     val resultList = mutableListOf<Int>()
 //    initialTask(resultList)
-//        atomicResolution(resultList)
-//    syncResolution(resultList)
-    lockResolution(resultList)
+//        atomicSolution(resultList)
+//    syncSolution(resultList)
+    lockSolution(resultList)
 
     // Все должны быть 0
     val res = resultList.count { it != 0 }
@@ -40,7 +40,7 @@ fun initialTask(resultList: MutableList<Int>) {
 }
 
 // быстрее блокировок
-fun atomicResolution(resultList: MutableList<Int>) {
+fun atomicSolution(resultList: MutableList<Int>) {
     for (i in 0..100) {
         val counter = AtomicInteger(0)
 
@@ -58,7 +58,7 @@ fun atomicResolution(resultList: MutableList<Int>) {
     }
 }
 
-fun syncResolution(resultList: MutableList<Int>) {
+fun syncSolution(resultList: MutableList<Int>) {
     val monitor = Any()
     for (i in 0..100) {
         var counter = 0
@@ -85,7 +85,7 @@ fun syncResolution(resultList: MutableList<Int>) {
     }
 }
 
-fun lockResolution(resultList: MutableList<Int>) {
+fun lockSolution(resultList: MutableList<Int>) {
     val lock = ReentrantLock()
     for (i in 0..100) {
         var counter = 0
