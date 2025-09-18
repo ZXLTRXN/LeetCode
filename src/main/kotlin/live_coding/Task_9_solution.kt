@@ -1,6 +1,6 @@
 package live_coding
 
-import java.util.LinkedList
+import java.lang.ref.WeakReference
 
 /**
  * видео: Проводим собеседование в Android-команду Тинькофф в прямом эфире
@@ -13,55 +13,70 @@ object Const {
 }
 
 open class ChatSessionController(
+    outerContext: Context,
     private val accountRepository: ChatAccountRepository,
     private val preferencesManager: ChatPreferencesManager,
 ) {
 
-    lateinit var context: Context
+    private val monitor = Any()
+
+    // в целом он тут не нужен, не тот слой. idPrefix можно константой
+    var context: WeakReference<Context> = WeakReference(outerContext)
 
     companion object {
         @Volatile
-        private var user: User? = null
+        private var ownerUser: User? = null
     }
 
-    @Synchronized
-    fun initChat(): Single<Boolean> {
-        val success = false
-        val idPrefix = context.getString(1)
-        var range = accountRepository.getAccounts().size
-        for (i in Const.INDEX..range) {
-            val account = accountRepository.getAccounts()[i]
+    fun initChat(): Boolean {
+        if (ownerUser != null) {
+            return false
+        }
+        val idPrefix: String = context.get()?.getString(1) ?: return false
+
+        val accounts: List<Account> = accountRepository.getAccounts()
+        var success = false
+
+        for (i in Const.INDEX..<accounts.size) {
+            val account = accounts[i]
             if (account.isOwner) {
-                user = User(
-                    id = idPrefix + account.id,
-                    name = null,
-                    phone = null,
-                )
+                synchronized(monitor) {
+                    if (ownerUser != null) {
+                        return false
+                    }
+                    ownerUser = User(
+                        id = idPrefix + account.id,
+                        name = null,
+                        phone = null,
+                    )
+                }
+                success = true
+                preferencesManager.initPreferences()
+                break
             }
         }
 
-        if (success == true) {
-            preferencesManager.initPreferences()
-        }
-
-        println("Init Chat, User = ${user}")
-        return Single() // не хватало в исходнике
+        println("Init Chat, User = ${ownerUser}")
+        return success
     }
 
     fun logout() {
         println("Logout Chat")
-        preferencesManager.getPreferences().edit().clear().apply()
+        synchronized(monitor) {
+            ownerUser = null
+        }
+        preferencesManager.getPreferences().edit().clear().apply() // full clean
     }
 }
 
-class User(
-    var id: String,
-    var name: String? = null,
-    var phone: String? = null,
+data class User( // data
+    val id: String, // val
+    val name: String? = null,
+    val phone: String? = null,
 )
 
 interface ChatAccountRepository {
-    fun getAccounts(): LinkedList<Account>
+    fun getAccounts(): List<Account>
 }
 
 interface ChatPreferencesManager {
