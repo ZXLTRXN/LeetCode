@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 //}
 // 0 starting finished 1 2 3...
 
+// еще одна похожая
 fun main() {
     runBlocking {
         val a = launch {

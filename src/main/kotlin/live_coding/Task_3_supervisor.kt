@@ -42,7 +42,7 @@ suspend fun sourceCodeWithProblem(ceh :CoroutineExceptionHandler) {
     cs.join()
 }
 
-suspend fun resolution(ceh :CoroutineExceptionHandler) {
+suspend fun solution(ceh :CoroutineExceptionHandler) {
     val cs = CoroutineScope(Dispatchers.Default + SupervisorJob() + ceh).launch {
         val one = launch {
             try {
@@ -72,7 +72,7 @@ fun main() {
 
     runBlocking {
 //        sourceCodeWithProblem(ceh)
-        resolution(ceh)
+        solution(ceh)
     }
 }
 

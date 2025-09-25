@@ -24,6 +24,29 @@ fun main() {
 //        atomicSolution()
         mutexSolution()
     }
+
+//    initialTask2()
+}
+
+// еще одна по теме, думаю ответ 1 или 2, т.к операция неатомарная и и оба потока
+// возьмут 0 и запишут 1 одновременно -> 1 возможен
+fun initialTask2() {
+    var counter = 0
+    val scope = CoroutineScope(Dispatchers.IO)
+
+    scope.launch {
+        counter += 1
+    }
+
+    scope.launch {
+        counter += 1
+    }
+
+    runBlocking {
+        delay(100)
+    }
+
+    println(counter)
 }
 
 suspend fun CoroutineScope.initialTask() {
