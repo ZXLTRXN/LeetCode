@@ -8,7 +8,7 @@ import kotlin.random.Random
  * Task и тела методов TaskManager писал сам
  */
 
-data class Task(
+data class TaskM(
     val action: () -> Unit,
     val delay: Long,
     val startDate: Long = System.currentTimeMillis()
@@ -22,7 +22,7 @@ class TaskManager {
 
     // коллекцию написал от балды, может есть и оптимальней
     // либо можно на потокобезопасных коллекциях без synchronized обойтись
-    val tasks: MutableList<Task> = mutableListOf()
+    val tasks: MutableList<TaskM> = mutableListOf()
 
     private val lock = Any()
 
@@ -30,9 +30,9 @@ class TaskManager {
      *  Метод addTask, который принимает исполняемый код задачи и опциональную задержку перед ее выполнением (в миллисекундах).
      *  Метод должен возвращать объект типа Task, который представляет добавленную задачу.
      */
-    fun addTask(action: () -> Unit, delay: Long = 0L): Task {
+    fun addTask(action: () -> Unit, delay: Long = 0L): TaskM {
         synchronized(lock) {
-            val task = Task(action, delay)
+            val task = TaskM(action, delay)
             tasks.add(task)
             return task
         }

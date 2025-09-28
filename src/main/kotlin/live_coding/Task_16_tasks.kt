@@ -4,7 +4,7 @@ package live_coding
 // Какой будет вывод после выполнения данного кода?
 // Как вывести все числа пропустив 3?
 
-//class Task(var id: Long, val name: String)
+private class Task(var id: Long, val name: String)
 //
 //val tasks = HashSet<Task>()
 //
@@ -33,15 +33,14 @@ package live_coding
 //    list.reversed.forEach { itemAction(it) }
 //}
 
-data class Task1(val id: Long, val name: String)
 
-val tasks = HashSet<Task1>()
+private val tasks = HashSet<Task>()
 
 val list: MutableList<Int> = mutableListOf(1, 3, 5)
 
 fun main() {
-    val task1 = Task1(1, "Задача")
-    val task2 = Task1(1, "Задача")
+    val task1 = Task(1, "Задача")
+    val task2 = Task(1, "Задача")
 
     tasks.add(task1)
     tasks.add(task2)
