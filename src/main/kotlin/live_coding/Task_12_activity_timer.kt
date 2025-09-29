@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.*
  * Таймер верный, однако я не подумал что писать его в активити это неверно
  * я должен был эту логику перенести во вьюмодель!
  */
-class Activity(parentJob: Job?) {
+private class Activity(parentJob: Job?) {
 
     val textView = TextView()
 
@@ -58,7 +58,7 @@ class TextView {
     }
 }
 
-class ViewModel() {
+private class ViewModel() {
 
     /**
      * описать поведение таймера
