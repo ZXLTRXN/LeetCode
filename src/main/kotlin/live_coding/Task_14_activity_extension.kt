@@ -7,12 +7,12 @@ import java.io.Serializable
 //    return intent.getSerializableExtra(name) as T
 //}
 
-fun <T: Serializable> Activity1.getSerializable(key: String): T? {
+fun <T: Serializable> Activity2.getSerializable(key: String): T? {
     return intent.getSerializableExtra(key) as? T
 }
 
 
-class Activity1() {
+class Activity2() {
     val intent: Intent1 = Intent1()
 }
 
@@ -22,6 +22,6 @@ class Intent1 {
 }
 
 fun main() {
-    val act = Activity1()
+    val act = Activity2()
     val user = act.getSerializable<Int>("1")
 }
