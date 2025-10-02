@@ -42,7 +42,7 @@ class ScreenViewModel(
             delay(debounceMs)
 
             emit(ScreenState.Loading(query))
-            val resultState = getModelsState(query)
+            val resultState = getModelsState(query) // withContext можно
             emit(resultState)
         }.stateIn(
             scope = viewModelScope,
