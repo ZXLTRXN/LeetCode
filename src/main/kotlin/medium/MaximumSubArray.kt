@@ -1,4 +1,4 @@
-package easy
+package medium
 
 import kotlin.math.max
 
