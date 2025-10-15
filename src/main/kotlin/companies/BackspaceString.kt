@@ -1,8 +1,9 @@
-package medium
+package companies
 
 import assertEquals
 
 /**
+ * Yandex
  * Проверить равны ли строки с учетом операций backspace (#)
  * Без использования дополнительной памяти
  *

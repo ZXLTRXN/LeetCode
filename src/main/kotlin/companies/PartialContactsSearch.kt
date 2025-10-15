@@ -1,4 +1,4 @@
-package medium
+package companies
 
 import assertEquals
 import kotlin.math.max
