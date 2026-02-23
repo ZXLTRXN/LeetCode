@@ -52,5 +52,6 @@ fun ozonBlock() {
 // то есть мы даже не дойдем до переключения контекста
 
 fun main() {
+//    alphaBlock()
     ozonBlock()
 }

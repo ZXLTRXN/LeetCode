@@ -7,8 +7,16 @@ import java.io.Serializable
 //    return intent.getSerializableExtra(name) as T
 //}
 
-fun <T: Serializable> Activity2.getSerializable(key: String): T? {
-    return intent.getSerializableExtra(key) as? T
+
+inline fun <reified T : Serializable> Activity2.getSerializable(
+    name: String
+): T? {
+//    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        return intent.getSerializableExtra(name, T::class.java)
+//    } else {
+//        @Suppress("DEPRECATION")
+//        intent.getSerializableExtra(name) as? T
+//    }
 }
 
 
@@ -17,7 +25,9 @@ class Activity2() {
 }
 
 class Intent1 {
-    fun getSerializableExtra(key: String) { // хз какой апи тут
+    fun getSerializableExtra(key: String): Any? { return null }
+    fun <T>getSerializableExtra(key: String, clazz: Class<T>): T? {
+        return key as T
     }
 }
 

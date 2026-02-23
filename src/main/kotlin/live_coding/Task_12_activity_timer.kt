@@ -27,18 +27,26 @@ private class Activity(parentJob: Job?) {
 
     fun onCreate(savedInstanceState: Any?) {
         if (savedInstanceState == null) { // чтобы при повороте не перезапускать
-            vm.countDownFlow(5)
-                .onEach {
+//            vm.countDownFlow(5)
+//                .onEach {
+//                    textView.setText(it.toString())
+//                }
+//                .onCompletion { th ->
+//                    if (th == null) {
+//                        launchSecondActivity()
+//                    } else {
+//                        println("completed with $th")
+//                    }
+//                }
+//                .launchIn(lifecycleScope)
+
+            vm.timerStateFlow(5).onEach { // лучше
+                if(it > 0) {
                     textView.setText(it.toString())
+                } else {
+                    launchSecondActivity()
                 }
-                .onCompletion { th ->
-                    if (th == null) {
-                        launchSecondActivity()
-                    } else {
-                        println("completed with $th")
-                    }
-                }
-                .launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
         }
 
     }
@@ -60,9 +68,6 @@ class TextView {
 
 private class ViewModel() {
 
-    /**
-     * описать поведение таймера
-     */
     fun countDownFlow(
         durationSec: Int,
     ): Flow<Int> = flow {
@@ -75,6 +80,19 @@ private class ViewModel() {
             delay(1_000L)
         }
     }
+
+    val viewModelScope = CoroutineScope(SupervisorJob())
+
+    fun timerStateFlow(initial: Int): StateFlow<Int> = flow<Int> {
+        var currentTime = initial
+        while (currentTime > 0) {
+            delay(1000)
+            currentTime--
+            emit(currentTime)
+        }
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), initial
+    )
 
 }
 

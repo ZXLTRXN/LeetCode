@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,11 +25,35 @@ import kotlinx.coroutines.withContext
 
  * Два независимых запроса: fetchUser() и fetchUserOrders(). Выполнить параллельно.
  * Если любая из них завершается ошибкой — вся корутина отменяется.
- * Сделал по сложнее, если ошибка в первой - отмена, во второй - частичный успех
+ * В getData() Сделал по сложнее, если ошибка в первой - отмена, во второй - частичный успех
  * (для каноничного случая хватит 1 try)
  * Состояние описывается через sealed interface с тремя состояниями: Loading, Success, Failure.
 
  */
+
+suspend fun getData2(id: Int): AggregateState = withContext(Dispatchers.IO) {
+    try {
+        coroutineScope {
+            val userDataDef = async {
+                println("async1 on ${Thread.currentThread().name}")
+                val users = fetchUser(id = id)
+                users
+            }
+
+            val userOrdersDef = async {
+                println("async2 on ${Thread.currentThread().name}")
+                val orders = fetchUserOrdersError(id = id)
+                orders
+            }
+            AggregateState.Success(userDataDef.await(), userOrdersDef.await())
+        }
+    } catch (ex: CancellationException) {
+        throw ex
+    } catch (ex: Exception) {
+        return@withContext AggregateState.Failure(ex)
+    }
+}
+
 suspend fun getData(
     id: Int
 ): AggregateState = withContext(Dispatchers.IO) {
@@ -118,7 +143,7 @@ fun main() {
 
         launch {
             try {
-                _stateFlow.value = getData(1)
+                _stateFlow.value = getData2(1)
             } catch (ex: RuntimeException) {
                 println("getData wrapper ex $ex") // если есть доп скоп внутри, то сюда не дойдут ошибки
                 throw ex

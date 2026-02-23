@@ -108,6 +108,20 @@ class Activity1() {
 //            }
 //        }
 
+//        COMPOSE
+//        val state by viewModel.uiState.collectAsStateWithLifecycle()
+//        val flow by viewModel.flow.collectAsState(initial = emptyList())
+//        LaunchedEffect(viewModel) { // channel = _channel.receiveAs Flow
+//            viewModel.events.collect { event ->
+//                when (event) {
+//                    is UiEvent.ShowToast -> {
+//                    }
+//                    is UiEvent.Navigate -> {
+//                    }
+//                }
+//            }
+//        }
+
     }
 }
 

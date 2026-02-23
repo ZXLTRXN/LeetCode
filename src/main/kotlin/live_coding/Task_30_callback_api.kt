@@ -31,7 +31,7 @@ class Service(
         requests: List<Request>,
         callback: (List<Response>) -> Unit
     ) = withContext(dispatchersProvider()) {
-        coroutineScope {
+        supervisorScope {
             val responseDeferred = requests.map {
                 async { request(it) }
             }
@@ -39,7 +39,9 @@ class Service(
             val results: List<Response> = responseDeferred.mapNotNull { deferred ->
                 try {
                     deferred.await()
-                } catch (ex: Exception) {
+                } catch (ex: CancellationException) {
+                    throw ex
+                }catch (ex: Exception) {
                     null
                 }
             }

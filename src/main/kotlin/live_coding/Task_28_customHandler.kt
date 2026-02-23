@@ -4,7 +4,7 @@ import java.util.LinkedList
 
 class SimpleHandler : Thread() {
     // private
-    internal var alive = true //volatile atomicBoolean излишен, тк нет прочитал, а потом записал(используя if)
+    internal var alive = true //volatile atomicBoolean излишен, тк нет: прочитал, а потом записал(используя if)
     internal val taskQueue = LinkedList<Runnable>() // concurrent collection
 
 // init{start()} не хватает
