@@ -1,5 +1,6 @@
 package live_coding
 
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -15,7 +16,7 @@ import kotlinx.coroutines.runBlocking
  */
 
 fun main() {
-    alphaOrder()
+    wildberriesStructuredConcurrency3()
 }
 
 fun wildberriesStructuredConcurrency() {
@@ -89,5 +90,45 @@ fun wildberriesStructuredConcurrency2() {
         delay(1000L)
         println(myOuterJob?.isActive) // false
         println(myInnerJob?.isActive) // true
+    }
+}
+
+fun wildberriesStructuredConcurrency3() {
+    runBlocking {
+        val handler = CoroutineExceptionHandler { _, e -> println("$e") }
+        val scope = CoroutineScope(handler)
+        val f = scope.launch() {
+            launch {
+                delay(500)
+                println("1")
+            }
+            launch {
+                delay(2000)
+                println("2")
+            }
+            launch {
+                delay(1500)
+                throw IllegalStateException("exception")
+            }
+        }
+        val s = scope.launch {
+            launch {
+                delay(2500)
+                println("5")
+            }
+            launch {
+                delay(3000)
+                println("6")
+            }
+            launch {
+                delay(3500)
+                println("7")
+            }
+        }
+        f.join()
+        s.join()
+
+        println("finish") // 1 /// ex
+
     }
 }
